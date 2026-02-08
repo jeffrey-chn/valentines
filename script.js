@@ -6,10 +6,9 @@ const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
 let dodgeCount = 0;
+const dangerRadius = 120; // distance in pixels before it runs
 
-noBtn.addEventListener("mouseover", () => {
-  dodgeCount++;
-
+function moveNoButton() {
   const container = document.querySelector(".buttons");
   const containerRect = container.getBoundingClientRect();
 
@@ -22,12 +21,27 @@ noBtn.addEventListener("mouseover", () => {
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
 
-  // Make it smaller every time
-  const scale = Math.max(0.4, 1 - dodgeCount * 0.05);
+  dodgeCount++;
+  const scale = Math.max(0.35, 1 - dodgeCount * 0.05);
   noBtn.style.transform = `scale(${scale})`;
+  noBtn.style.transition = "all 0.15s ease";
+}
 
-  // Increase panic speed
-  noBtn.style.transition = `all ${Math.max(0.05, 0.3 - dodgeCount * 0.03)}s`;
+// Detect cursor proximity
+document.addEventListener("mousemove", (e) => {
+  const btnRect = noBtn.getBoundingClientRect();
+
+  const btnCenterX = btnRect.left + btnRect.width / 2;
+  const btnCenterY = btnRect.top + btnRect.height / 2;
+
+  const distance = Math.hypot(
+    e.clientX - btnCenterX,
+    e.clientY - btnCenterY
+  );
+
+  if (distance < dangerRadius) {
+    moveNoButton();
+  }
 });
 
 // YES button logic
