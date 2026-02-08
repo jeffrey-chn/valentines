@@ -19,7 +19,7 @@ function moveNoButton() {
 
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
-  noBtn.style.transition = "all 0.15s ease";
+  noBtn.style.transition = "all 0.08s ease";
 }
 
 document.addEventListener("mousemove", (e) => {
