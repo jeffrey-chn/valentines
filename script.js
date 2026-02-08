@@ -5,7 +5,7 @@ const song = document.getElementById("loveSong");
 const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
-const dangerRadius = 140; // how close the cursor can get
+const dangerRadius = 130; // how close the cursor can get
 
 function moveNoButton() {
   const container = document.querySelector(".buttons");
