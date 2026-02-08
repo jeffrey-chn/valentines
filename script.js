@@ -6,7 +6,7 @@ const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
 let dodgeCount = 0;
-const dangerRadius = 120; // distance in pixels before it runs
+const dangerRadius = 150; // distance in pixels before it runs
 
 function moveNoButton() {
   const container = document.querySelector(".buttons");
