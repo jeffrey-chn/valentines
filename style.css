@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background: #ffe6f0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.main-photo {
+  width: 300px;
+  max-width: 80%;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: #d63384;
+  margin-bottom: 20px;
+}
+
+.buttons {
+  position: relative;
+  height: 80px;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#yesBtn {
+  background-color: #ff4d6d;
+  color: white;
+  margin-right: 20px;
+}
+
+#noBtn {
+  background-color: #adb5bd;
+  color: white;
+  position: absolute;
+}
