@@ -22,7 +22,6 @@ function moveNoButton() {
   noBtn.style.top = `${randomY}px`;
 
   dodgeCount++;
-  const scale = Math.max(0.35, 1 - dodgeCount * 0.05);
   noBtn.style.transform = `scale(${scale})`;
   noBtn.style.transition = "all 0.15s ease";
 }
