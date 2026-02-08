@@ -52,3 +52,10 @@ button {
   color: white;
   position: absolute;
 }
+
+.final-text {
+  margin-top: 15px;
+  font-size: 20px;
+  color: #6c757d;
+  font-style: italic;
+}
