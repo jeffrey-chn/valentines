@@ -5,8 +5,7 @@ const song = document.getElementById("loveSong");
 const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
-let dodgeCount = 0;
-const dangerRadius = 150; // distance in pixels before it runs
+const dangerRadius = 140; // how close the cursor can get
 
 function moveNoButton() {
   const container = document.querySelector(".buttons");
@@ -20,16 +19,11 @@ function moveNoButton() {
 
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
-
-  dodgeCount++;
-  noBtn.style.transform = `scale(${scale})`;
   noBtn.style.transition = "all 0.15s ease";
 }
 
-// Detect cursor proximity
 document.addEventListener("mousemove", (e) => {
   const btnRect = noBtn.getBoundingClientRect();
-
   const btnCenterX = btnRect.left + btnRect.width / 2;
   const btnCenterY = btnRect.top + btnRect.height / 2;
 
@@ -43,7 +37,6 @@ document.addEventListener("mousemove", (e) => {
   }
 });
 
-// YES button logic
 yesBtn.addEventListener("click", () => {
   song.play();
   page1.classList.add("hidden");
