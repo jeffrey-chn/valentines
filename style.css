@@ -30,7 +30,10 @@ h1 {
 
 .buttons {
   position: relative;
-  height: 80px;
+  height: 200px;
+  margin-top: 20px;
+}
+
 }
 
 button {
