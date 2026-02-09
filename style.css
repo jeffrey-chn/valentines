@@ -30,9 +30,21 @@ h1 {
 
 .buttons {
   position: relative;
-  height: 200px;
-  margin-top: 20px;
+  height: 220px;
+  margin-top: 30px;
 }
+
+#yesBtn {
+  position: relative;
+  z-index: 2;
+}
+
+#noBtn {
+  position: absolute;
+  left: 120px;
+  top: 80px;
+}
+
 
 }
 
