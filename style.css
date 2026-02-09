@@ -28,14 +28,19 @@ h1 {
   margin-bottom: 20px;
 }
 
-.buttons {
-  position: relative;
-  height: 200px;
-  margin-top: 20px;
+.button {
+  padding: 18px 36px;
+  font-size: 22px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
 }
+
 
 .final-text {
   margin-top: 15px;
   font-size: 20px;
   color: #6c757d;
+}
+
 }
