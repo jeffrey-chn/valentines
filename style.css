@@ -49,5 +49,22 @@ h1 {
   margin-top: 15px;
   font-size: 20px;
   color: #6c757d;
-  font-style: italic;
+}
+
+button {
+  padding: 18px 36px;
+  font-size: 22px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+#yesBtn {
+  background-color: #ff4d6d;
+  color: white;
+}
+
+#noBtn {
+  background-color: #adb5bd;
+  color: white;
 }
