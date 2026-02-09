@@ -34,7 +34,6 @@ h1 {
   margin-top: 20px;
 }
 
-}
 
 button {
   padding: 12px 24px;
@@ -44,17 +43,6 @@ button {
   cursor: pointer;
 }
 
-#yesBtn {
-  background-color: #ff4d6d;
-  color: white;
-  margin-right: 20px;
-}
-
-#noBtn {
-  background-color: #adb5bd;
-  color: white;
-  position: absolute;
-}
 
 .final-text {
   margin-top: 15px;
