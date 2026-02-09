@@ -5,64 +5,99 @@ const song = document.getElementById("loveSong");
 const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
-const dangerRadius = 150;
-let canMove = true;
+const dangerRadius = 160;
+const minDistanceFromYes = 80;
+let lastMoveTime = 0;
 
-// Helper to move button smoothly
-function moveNoButton() {
-  if (!canMove) return;
-  canMove = false;
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function moveNoButtonAway(mouseX, mouseY) {
+  const now = Date.now();
+  if (now - lastMoveTime < 180) return; // cooldown
+  lastMoveTime = now;
 
   const container = document.querySelector(".buttons");
   const containerRect = container.getBoundingClientRect();
-  const btnRect = noBtn.getBoundingClientRect();
+  const noRect = noBtn.getBoundingClientRect();
+  const yesRect = yesBtn.getBoundingClientRect();
 
-  const maxX = containerRect.width - btnRect.width;
-  const maxY = containerRect.height - btnRect.height;
+  // Current center of No button
+  const noCenterX = noRect.left + noRect.width / 2;
+  const noCenterY = noRect.top + noRect.height / 2;
 
-  // Keep movement mostly vertical, limited horizontal
-  const currentLeft = noBtn.offsetLeft;
-  const currentTop = noBtn.offsetTop;
+  // Direction away from cursor
+  let dx = noCenterX - mouseX;
+  let dy = noCenterY - mouseY;
 
-  const verticalShift = (Math.random() * 2 - 1) * 50; // up/down
-  const horizontalShift = (Math.random() * 2 - 1) * 20; // small left/right
+  const length = Math.hypot(dx, dy) || 1;
+  dx /= length;
+  dy /= length;
 
-  let newLeft = currentLeft + horizontalShift;
-  let newTop = currentTop + verticalShift;
+  // Strong vertical bias
+  dy *= 1.8;
 
-  // Clamp within container
-  newLeft = Math.max(0, Math.min(newLeft, maxX));
-  newTop = Math.max(0, Math.min(newTop, maxY));
+  const moveDistance = 90;
 
+  let newLeft =
+    noBtn.offsetLeft + dx * moveDistance;
+  let newTop =
+    noBtn.offsetTop + dy * moveDistance;
+
+  // Clamp inside container
+  const maxX = containerRect.width - noRect.width;
+  const maxY = containerRect.height - noRect.height;
+
+  newLeft = clamp(newLeft, 0, maxX);
+  newTop = clamp(newTop, 0, maxY);
+
+  // Prevent touching Yes button
+  const futureNoRect = {
+    left: containerRect.left + newLeft,
+    top: containerRect.top + newTop,
+    right: containerRect.left + newLeft + noRect.width,
+    bottom: containerRect.top + newTop + noRect.height,
+  };
+
+  const overlapsYes =
+    futureNoRect.right + minDistanceFromYes > yesRect.left &&
+    futureNoRect.left - minDistanceFromYes < yesRect.right &&
+    futureNoRect.bottom + minDistanceFromYes > yesRect.top &&
+    futureNoRect.top - minDistanceFromYes < yesRect.bottom;
+
+  if (overlapsYes) {
+    // Force vertical escape if too close to Yes
+    newTop =
+      noBtn.offsetTop +
+      (noCenterY < yesRect.top ? -1 : 1) * moveDistance;
+    newTop = clamp(newTop, 0, maxY);
+  }
+
+  noBtn.style.transition = "all 0.18s ease";
   noBtn.style.left = `${newLeft}px`;
   noBtn.style.top = `${newTop}px`;
-  noBtn.style.transition = "all 0.2s ease";
-
-  // Cooldown to prevent jitter
-  setTimeout(() => {
-    canMove = true;
-  }, 200);
 }
 
-// Detect cursor proximity
+// Detect cursor proximity EARLY
 document.addEventListener("mousemove", (e) => {
-  const btnRect = noBtn.getBoundingClientRect();
-  const btnCenterX = btnRect.left + btnRect.width / 2;
-  const btnCenterY = btnRect.top + btnRect.height / 2;
+  const rect = noBtn.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
 
   const distance = Math.hypot(
-    e.clientX - btnCenterX,
-    e.clientY - btnCenterY
+    e.clientX - centerX,
+    e.clientY - centerY
   );
 
   if (distance < dangerRadius) {
-    moveNoButton();
+    moveNoButtonAway(e.clientX, e.clientY);
   }
 });
 
-// YES button logic
+// YES button
 yesBtn.addEventListener("click", () => {
-  song.loop = true;   // 🔁 repeat forever
+  song.loop = true;
   song.play();
 
   page1.classList.add("hidden");
