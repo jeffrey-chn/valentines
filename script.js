@@ -6,98 +6,103 @@ const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 
 const dangerRadius = 160;
-const minDistanceFromYes = 80;
-let lastMoveTime = 0;
+const minGap = 30; // minimum space between buttons
+let isMoving = false;
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+function getCenter(rect) {
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  };
 }
 
-function moveNoButtonAway(mouseX, mouseY) {
-  const now = Date.now();
-  if (now - lastMoveTime < 180) return; // cooldown
-  lastMoveTime = now;
+function moveNoButton(mouseX, mouseY) {
+  if (isMoving) return;
+  isMoving = true;
 
   const container = document.querySelector(".buttons");
   const containerRect = container.getBoundingClientRect();
   const noRect = noBtn.getBoundingClientRect();
   const yesRect = yesBtn.getBoundingClientRect();
 
-  // Current center of No button
-  const noCenterX = noRect.left + noRect.width / 2;
-  const noCenterY = noRect.top + noRect.height / 2;
+  const noCenter = getCenter(noRect);
 
   // Direction away from cursor
-  let dx = noCenterX - mouseX;
-  let dy = noCenterY - mouseY;
+  let dx = noCenter.x - mouseX;
+  let dy = noCenter.y - mouseY;
 
   const length = Math.hypot(dx, dy) || 1;
   dx /= length;
   dy /= length;
 
   // Strong vertical bias
-  dy *= 1.8;
+  dy *= 2;
 
   const moveDistance = 90;
 
-  let newLeft =
-    noBtn.offsetLeft + dx * moveDistance;
-  let newTop =
-    noBtn.offsetTop + dy * moveDistance;
+  let newLeft = noBtn.offsetLeft + dx * moveDistance;
+  let newTop = noBtn.offsetTop + dy * moveDistance;
 
-  // Clamp inside container
+  // Clamp to container
   const maxX = containerRect.width - noRect.width;
   const maxY = containerRect.height - noRect.height;
 
-  newLeft = clamp(newLeft, 0, maxX);
-  newTop = clamp(newTop, 0, maxY);
+  newLeft = Math.max(0, Math.min(newLeft, maxX));
+  newTop = Math.max(0, Math.min(newTop, maxY));
 
   // Prevent touching Yes button
-  const futureNoRect = {
+  const futureNo = {
     left: containerRect.left + newLeft,
-    top: containerRect.top + newTop,
     right: containerRect.left + newLeft + noRect.width,
-    bottom: containerRect.top + newTop + noRect.height,
+    top: containerRect.top + newTop,
+    bottom: containerRect.top + newTop + noRect.height
   };
 
-  const overlapsYes =
-    futureNoRect.right + minDistanceFromYes > yesRect.left &&
-    futureNoRect.left - minDistanceFromYes < yesRect.right &&
-    futureNoRect.bottom + minDistanceFromYes > yesRect.top &&
-    futureNoRect.top - minDistanceFromYes < yesRect.bottom;
+  const yes = yesRect;
 
-  if (overlapsYes) {
-    // Force vertical escape if too close to Yes
+  const overlaps =
+    futureNo.right + minGap > yes.left &&
+    futureNo.left - minGap < yes.right &&
+    futureNo.bottom + minGap > yes.top &&
+    futureNo.top - minGap < yes.bottom;
+
+  if (overlaps) {
+    // Force vertical-only escape away from Yes
     newTop =
       noBtn.offsetTop +
-      (noCenterY < yesRect.top ? -1 : 1) * moveDistance;
-    newTop = clamp(newTop, 0, maxY);
+      (noCenter.y < yes.top ? -1 : 1) * moveDistance;
+    newTop = Math.max(0, Math.min(newTop, maxY));
   }
 
-  noBtn.style.transition = "all 0.18s ease";
+  noBtn.style.transition = "top 0.25s ease, left 0.25s ease";
   noBtn.style.left = `${newLeft}px`;
   noBtn.style.top = `${newTop}px`;
+
+  // Cooldown to stop jitter
+  setTimeout(() => {
+    isMoving = false;
+  }, 250);
 }
 
-// Detect cursor proximity EARLY
+// Detect proximity BEFORE hover
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+  const center = getCenter(rect);
 
   const distance = Math.hypot(
-    e.clientX - centerX,
-    e.clientY - centerY
+    e.clientX - center.x,
+    e.clientY - center.y
   );
 
   if (distance < dangerRadius) {
-    moveNoButtonAway(e.clientX, e.clientY);
+    moveNoButton(e.clientX, e.clientY);
   }
 });
 
-// YES button
+// YES button logic
 yesBtn.addEventListener("click", () => {
   song.loop = true;
+  song.currentTime = 0;
   song.play();
 
   page1.classList.add("hidden");
