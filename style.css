@@ -35,9 +35,14 @@ h1 {
 
 .buttons {
   position: relative;
-  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
   margin-top: 30px;
+  height: 300px;
 }
+
 
 #yesBtn {
   position: relative;
@@ -46,9 +51,11 @@ h1 {
 
 #noBtn {
   position: absolute;
-  left: 160px;
-  top: 110px;
+  background-color: #adb5bd;
+  color: white;
+  transition: transform 0.15s ease;
 }
+
 
 .final-text {
   margin-top: 15px;
